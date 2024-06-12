@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+    #inputText, #outputText {
+        width: 75%;
+        height: 200px; /* 控制输入输出框的高度 */
+        padding: 10px;
+        box-sizing: border-box; /* 让 padding 不会增加元素的实际大小 */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: vertical; /* 允许垂直拖拽调整大小 */
+    }
+	
+        .author-info {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        body {
+            font-family: Roboto, sans-serif;
+            /* font-family: Arial, sans-serif;*/
+            font-size: 14px;            /* 設置較小的字體大小 */
+        }	
+	
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WpfRTSPPlayer_time_update</title>
+    <script>
+        function updateTimestamp() {
+            var inputText = document.getElementById("inputText").value;
+            var timeDifference = document.getElementById("timeDifference").value;
+
+            var lines = inputText.split('\n');
+            var updatedText = '';
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                var match = line.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
+                if (match !== null) {
+                    var originalTimestamp = new Date(match[0]);
+                    var timeToAdd = parseInt(timeDifference) * 1000; // Convert seconds to milliseconds
+                    var newTimestamp = new Date(originalTimestamp.getTime() + timeToAdd);
+
+                    // Format the new timestamp
+                    var year = newTimestamp.getFullYear();
+                    var month = (newTimestamp.getMonth() + 1).toString().padStart(2, '0');
+                    var day = newTimestamp.getDate().toString().padStart(2, '0');
+                    var hours = newTimestamp.getHours().toString().padStart(2, '0');
+                    var minutes = newTimestamp.getMinutes().toString().padStart(2, '0');
+                    var seconds = newTimestamp.getSeconds().toString().padStart(2, '0');
+
+                    var formattedNewTimestamp = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+                    line = line.replace(match[0], formattedNewTimestamp);
+                }
+                updatedText += line + '\n';
+            }
+
+            document.getElementById("outputText").value = updatedText;
+        }
+    </script>
+</head>
+<body>
+    <h2>WpfRTSPPlayer_time_update</h2>
+
+    <p class="author-info">Author: Dustin_Chen</p>
+    <p class="author-info">Email: <a href="mailto:Dustin_Chen@compal.com">Dustin_Chen@compal.com</a></p>
+    <p class="author-info">or <a href="mailto:chuhpsdustin@gmail.com">chuhpsdustin@gmail.com</a></p>
+    <br><br>	
+	
+    <label for="inputText">Input WpfRTSPPlayer_XXX.log Text:</label><br>
+    <textarea id="inputText" name="inputText" rows="10" cols="50"></textarea><br><br>
+    <label for="timeDifference">Add Time Difference (in seconds):</label><br>
+    <input type="text" id="timeDifference" name="timeDifference" size="10"><br><br>
+    <button type="button" onclick="updateTimestamp()">Update Timestamp</button><br><br>
+    <label for="outputText">Updated Text:</label><br>
+    <textarea id="outputText" name="outputText" rows="10" cols="50" readonly></textarea>
+</body>
+</html>
